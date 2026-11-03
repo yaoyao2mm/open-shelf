@@ -135,14 +135,14 @@ public/demo/                     # generated fictional artwork
 scripts/generate-demo-art.mjs    # cover/back generator
 ```
 
-The 3D shelf, wall, boards and plastic-wrap finish are generated in the browser with Three.js primitives and canvas textures. There are no third-party models, fonts or image packs in the repository.
+The demo cover art is generated in SVG. The room shelf uses the baked model and plastic-wrap textures in `public/demo/` so the lighting and material match the original shelf design; provenance and reuse notes are in [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md).
 
 ## Artwork and trademarks
 
 All demo titles, studios, descriptions and cover art are fictional and were created for this project. Any real product names, logos or trademarks mentioned by users of this project remain the property of their respective owners. This repository does not include commercial game artwork.
 
-The design takes inspiration from editorial 3D shelf interactions on the web, but the implementation and demo assets here are independent.
+The 3D shelf model and plastic-wrap textures are third-party visual references included for parity with the original design. Read [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md) before redistributing or using the project commercially.
 
 ## License
 
-[MIT](LICENSE). You can use, modify and redistribute the code and the generated demo artwork.
+The application code and generated fictional cover art are released under the [MIT license](LICENSE). The third-party shelf model, PBR textures and Inter font are covered by their own terms; see [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md).

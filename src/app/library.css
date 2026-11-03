@@ -2,7 +2,7 @@
   --sfe-ink: #000;
   --sfe-muted: rgba(0, 0, 0, 0.6);
   --sfe-rule: rgba(0, 0, 0, 0.1);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), Helvetica, Arial, sans-serif;
   color: var(--sfe-ink);
   background: var(--page-bg);
   position: fixed;
@@ -1163,7 +1163,7 @@
   overflow: auto;
   background: #0c0c0c;
   color: #fff;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), Helvetica, Arial, sans-serif;
 }
 
 .sfe-edition-bg {

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass.js";
@@ -9,6 +10,8 @@ import { getWallCovers } from "./walls";
 import { layoutWall } from "./layoutWall";
 import { layoutCollectionRack, type CollectionRack } from "./layoutCollectionRack";
 
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+const ASSET_ROOT = `${BASE_PATH}/demo`;
 const ALBUM_SIZE = 1.168;
 const REST_TILT = -0.26;
 const DETAIL_Z = 6.7;
@@ -583,10 +586,13 @@ export class ShelfScene {
   }
 
   private async init() {
+    const loader = new GLTFLoader();
     const textureLoader = new THREE.TextureLoader();
 
-    this.buildShelf();
-    await this.loadAlbums(textureLoader);
+    await Promise.all([
+      this.loadShelf(loader),
+      this.loadAlbums(textureLoader),
+    ]);
 
     this.startTime = performance.now();
     this.started = true;
@@ -652,190 +658,91 @@ export class ShelfScene {
   }
 
   /**
-   * The shelf is built from primitives so the project ships no third-party
-   * models or baked lightmaps. It keeps the proportions the covers are laid
-   * out for: two boards under the two featured rows, a wall behind them, and
-   * a soft light that falls off toward the edges.
+   * The shelf is the original baked room: a wall with the two boards modelled
+   * into it, and a lightmap that carries the glow behind the collection and
+   * the shadow each board throws onto the wall. Splitting the geometry keeps
+   * the boards opaque while the finite wall dissolves into the backdrop as the
+   * camera pulls back.
    */
-  private buildShelf() {
-    const group = new THREE.Group();
-    group.visible = this.mode === "desktop";
+  private async loadShelf(loader: GLTFLoader) {
+    try {
+      const gltf = await loader.loadAsync(`${ASSET_ROOT}/models/shelf.glb`);
+      const shelfNode = gltf.scene.getObjectByName("10Records_ShelfWall") as THREE.Mesh | undefined;
+      if (!shelfNode) {
+        console.warn("Shelf node not found");
+        return;
+      }
+      const sourceMaterial = shelfNode.material as THREE.MeshStandardMaterial;
+      const map = sourceMaterial.map ?? null;
+      if (map) {
+        map.colorSpace = THREE.SRGBColorSpace;
+        map.anisotropy = 8;
+      }
+      const source = shelfNode.geometry;
+      const index = source.getIndex();
+      const positions = source.getAttribute("position");
+      const boardTriangles: number[] = [];
+      const wallTriangles: number[] = [];
+      if (index && positions) {
+        for (let i = 0; i < index.count; i += 3) {
+          const a = index.getX(i);
+          const b = index.getX(i + 1);
+          const c = index.getX(i + 2);
+          const maxZ = Math.max(positions.getZ(a), positions.getZ(b), positions.getZ(c));
+          (maxZ > -0.1 ? boardTriangles : wallTriangles).push(a, b, c);
+        }
+      }
 
-    const wallMaterial = new THREE.MeshBasicMaterial({
-      map: this.createShelfWallTexture(),
-      transparent: true,
-      depthWrite: false,
-      toneMapped: false,
-    });
-    const wall = new THREE.Mesh(new THREE.PlaneGeometry(24, 16), wallMaterial);
-    wall.position.set(0, 0, -1.43);
-    wall.renderOrder = -5;
-    group.add(wall);
-    this.shelfWallMaterial = wallMaterial;
+      const group = new THREE.Group();
+      group.position.set(0, -0.52, -1.43);
+      group.scale.setScalar(3.5);
+      group.visible = this.mode === "desktop";
 
-    const boardMaterial = new THREE.MeshBasicMaterial({
-      map: this.createShelfBoardTexture(),
-      toneMapped: false,
-    });
-    this.shelfBoardMaterial = boardMaterial;
+      const boardGeometry = source.clone();
+      if (boardTriangles.length) boardGeometry.setIndex(boardTriangles);
+      const boardMaterial = new THREE.MeshBasicMaterial({ map });
+      const boards = new THREE.Mesh(boardGeometry, boardMaterial);
+      boards.position.set(0, -0.582, 0.119);
+      group.add(boards);
+      this.shelfBoardMaterial = boardMaterial;
 
-    const shadowMaterial = new THREE.MeshBasicMaterial({
-      map: this.createShelfShadowTexture(),
-      transparent: true,
-      opacity: 0.5,
-      depthWrite: false,
-      toneMapped: false,
-    });
+      if (wallTriangles.length) {
+        const wallGeometry = source.clone();
+        wallGeometry.setIndex(wallTriangles);
+        const wallMaterial = new THREE.MeshBasicMaterial({
+          map,
+          transparent: true,
+          depthWrite: false,
+        });
+        const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+        wall.position.copy(boards.position);
+        wall.renderOrder = -5;
+        group.add(wall);
+        this.shelfWallMaterial = wallMaterial;
+      }
 
-    for (const top of FEATURED_BOARD_TOPS) {
-      const board = new THREE.Mesh(
-        new THREE.BoxGeometry(8.6, RACK_BOARD_THICKNESS, RACK_BOARD_DEPTH),
-        boardMaterial,
-      );
-      board.position.set(0, top - RACK_BOARD_THICKNESS / 2, RACK_BOARD_CENTER_Z);
-      group.add(board);
-
-      const shadow = new THREE.Mesh(
-        new THREE.PlaneGeometry(8.2, 0.62),
-        shadowMaterial,
-      );
-      shadow.position.set(0, top - 0.36, -1.415);
-      shadow.renderOrder = -4;
-      group.add(shadow);
+      this.shelfGroup = group;
+      this.root.add(group);
+    } catch (error) {
+      console.error("Failed to load shelf", error);
     }
-
-    this.shelfGroup = group;
-    this.root.add(group);
   }
 
-  private createShelfWallTexture() {
-    const size = 1024;
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-    const context = canvas.getContext("2d")!;
-
-    const base = context.createLinearGradient(0, 0, 0, size);
-    base.addColorStop(0, "#e9e8e5");
-    base.addColorStop(0.55, "#deddda");
-    base.addColorStop(1, "#d2d1ce");
-    context.fillStyle = base;
-    context.fillRect(0, 0, size, size);
-
-    // A wide pool of light behind the shelf, then a smaller, warmer core.
-    const glow = context.createRadialGradient(
-      size * 0.5,
-      size * 0.44,
-      0,
-      size * 0.5,
-      size * 0.44,
-      size * 0.52,
-    );
-    glow.addColorStop(0, "rgba(255,255,255,0.85)");
-    glow.addColorStop(0.42, "rgba(255,255,255,0.32)");
-    glow.addColorStop(1, "rgba(255,255,255,0)");
-    context.fillStyle = glow;
-    context.fillRect(0, 0, size, size);
-
-    const core = context.createRadialGradient(
-      size * 0.5,
-      size * 0.46,
-      0,
-      size * 0.5,
-      size * 0.46,
-      size * 0.22,
-    );
-    core.addColorStop(0, "rgba(255,252,245,0.55)");
-    core.addColorStop(1, "rgba(255,252,245,0)");
-    context.fillStyle = core;
-    context.fillRect(0, 0, size, size);
-
-    // Fine paper grain, kept far below the point where it reads as noise.
-    const grain = context.getImageData(0, 0, size, size);
-    const data = grain.data;
-    for (let index = 0; index < data.length; index += 4) {
-      const value = (Math.random() - 0.5) * 7;
-      data[index] += value;
-      data[index + 1] += value;
-      data[index + 2] += value;
+  private async loadRecordGeometry() {
+    const loader = new GLTFLoader();
+    try {
+      const gltf = await loader.loadAsync(`${ASSET_ROOT}/models/record.glb`);
+      const node = gltf.scene.getObjectByName("Record1") as THREE.Mesh | undefined;
+      return node?.geometry ?? null;
+    } catch {
+      return null;
     }
-    context.putImageData(grain, 0, 0);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-    return texture;
-  }
-
-  private createShelfBoardTexture() {
-    const width = 1024;
-    const height = 128;
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d")!;
-
-    const face = context.createLinearGradient(0, 0, 0, height);
-    face.addColorStop(0, "#f4f3f0");
-    face.addColorStop(0.68, "#ebeae7");
-    face.addColorStop(1, "#d9d8d4");
-    context.fillStyle = face;
-    context.fillRect(0, 0, width, height);
-
-    context.strokeStyle = "rgba(120,118,112,0.28)";
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(0, height - 2);
-    context.lineTo(width, height - 2);
-    context.stroke();
-
-    const grain = context.getImageData(0, 0, width, height);
-    const data = grain.data;
-    for (let index = 0; index < data.length; index += 4) {
-      const value = (Math.random() - 0.5) * 5;
-      data[index] += value;
-      data[index + 1] += value;
-      data[index + 2] += value;
-    }
-    context.putImageData(grain, 0, 0);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-    return texture;
-  }
-
-  private createShelfShadowTexture() {
-    const width = 128;
-    const height = 128;
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext("2d")!;
-
-    const gradient = context.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, "rgba(0,0,0,0.55)");
-    gradient.addColorStop(0.38, "rgba(0,0,0,0.2)");
-    gradient.addColorStop(1, "rgba(0,0,0,0)");
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, width, height);
-
-    // Soften the ends so the shadow does not stop at a hard vertical edge.
-    context.globalCompositeOperation = "destination-in";
-    const ends = context.createLinearGradient(0, 0, width, 0);
-    ends.addColorStop(0, "rgba(0,0,0,0)");
-    ends.addColorStop(0.18, "rgba(0,0,0,1)");
-    ends.addColorStop(0.82, "rgba(0,0,0,1)");
-    ends.addColorStop(1, "rgba(0,0,0,0)");
-    context.fillStyle = ends;
-    context.fillRect(0, 0, width, height);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.colorSpace = THREE.NoColorSpace;
-    return texture;
   }
 
   private async loadAlbums(textureLoader: THREE.TextureLoader) {
+    // Start loading the record geometry in parallel with the sleeve textures.
+    const recordGeometryPromise = this.loadRecordGeometry();
+
     this.albumShadowTexture = createAlbumShadowTexture();
     const shadowMaterial = this.albumShadowTexture
       ? new THREE.MeshBasicMaterial({
@@ -853,26 +760,28 @@ export class ShelfScene {
       ALBUM_SIZE * ALBUM_SHADOW_SCALE,
     );
 
-    // The DOM uses the full-size artwork; the 3D scene reuses the same files.
-    const loaded = await Promise.all(
-      this.albumData.map(async (album) => {
-        try {
-          const [coverTexture, backTexture] = await Promise.all([
-            textureLoader.loadAsync(album.cover),
-            textureLoader.loadAsync(album.back),
-          ]);
-          coverTexture.colorSpace = THREE.SRGBColorSpace;
-          backTexture.colorSpace = THREE.SRGBColorSpace;
-          coverTexture.anisotropy = 8;
-          backTexture.anisotropy = 8;
-          coverTexture.generateMipmaps = true;
-          backTexture.generateMipmaps = true;
-          return { album, coverTexture, backTexture };
-        } catch {
-          return null;
-        }
-      }),
-    );
+    const [loaded, recordGeometry] = await Promise.all([
+      Promise.all(
+        this.albumData.map(async (album) => {
+          try {
+            const [coverTexture, backTexture] = await Promise.all([
+              textureLoader.loadAsync(album.cover),
+              textureLoader.loadAsync(album.back),
+            ]);
+            coverTexture.colorSpace = THREE.SRGBColorSpace;
+            backTexture.colorSpace = THREE.SRGBColorSpace;
+            coverTexture.anisotropy = 8;
+            backTexture.anisotropy = 8;
+            coverTexture.generateMipmaps = true;
+            backTexture.generateMipmaps = true;
+            return { album, coverTexture, backTexture };
+          } catch {
+            return null;
+          }
+        }),
+      ),
+      recordGeometryPromise,
+    ]);
 
     const wallTextures: THREE.Texture[] = [];
     for (let index = 0; index < loaded.length; index++) {
@@ -915,12 +824,23 @@ export class ShelfScene {
       backGroup.add(back);
       group.add(backGroup);
 
-      const record = new THREE.Mesh(
-        new THREE.PlaneGeometry(ALBUM_SIZE, ALBUM_SIZE),
-        new THREE.MeshBasicMaterial({ color: new THREE.Color(album.bgColor) }),
-      );
-      record.position.z = 0;
-      record.scale.z = 0.04;
+      let record: THREE.Mesh;
+      if (recordGeometry) {
+        record = new THREE.Mesh(
+          recordGeometry,
+          new THREE.MeshBasicMaterial({ color: new THREE.Color(album.bgColor) }),
+        );
+        record.scale.setScalar(3.5);
+        record.position.z = 0;
+        record.scale.z = 0.04;
+      } else {
+        record = new THREE.Mesh(
+          new THREE.PlaneGeometry(ALBUM_SIZE, ALBUM_SIZE),
+          new THREE.MeshBasicMaterial({ color: new THREE.Color(album.bgColor) }),
+        );
+        record.position.z = 0;
+        record.scale.z = 0.04;
+      }
       group.add(record);
 
       this.root.add(group);
@@ -958,59 +878,38 @@ export class ShelfScene {
     }
 
     this.buildWall(wallTextures);
-    this.applyCoverFinish();
+    void this.loadCoverFinish(textureLoader);
     this.frameCamera();
   }
 
-  /**
-   * Subtle roughness and plastic-wrap normal maps, generated in the browser so
-   * the repository does not need to ship texture binaries.
-   */
-  private applyCoverFinish() {
-    const size = 256;
-    const roughnessCanvas = document.createElement("canvas");
-    roughnessCanvas.width = size;
-    roughnessCanvas.height = size;
-    const roughnessContext = roughnessCanvas.getContext("2d")!;
-    const roughnessImage = roughnessContext.createImageData(size, size);
-    for (let index = 0; index < roughnessImage.data.length; index += 4) {
-      const value = 90 + Math.random() * 80;
-      roughnessImage.data[index] = value;
-      roughnessImage.data[index + 1] = value;
-      roughnessImage.data[index + 2] = value;
-      roughnessImage.data[index + 3] = 255;
-    }
-    roughnessContext.putImageData(roughnessImage, 0, 0);
-
-    const normalCanvas = document.createElement("canvas");
-    normalCanvas.width = size;
-    normalCanvas.height = size;
-    const normalContext = normalCanvas.getContext("2d")!;
-    const normalImage = normalContext.createImageData(size, size);
-    for (let index = 0; index < normalImage.data.length; index += 4) {
-      normalImage.data[index] = 118 + Math.random() * 20;
-      normalImage.data[index + 1] = 118 + Math.random() * 20;
-      normalImage.data[index + 2] = 246 + Math.random() * 9;
-      normalImage.data[index + 3] = 255;
-    }
-    normalContext.putImageData(normalImage, 0, 0);
-
-    const roughness = new THREE.CanvasTexture(roughnessCanvas);
-    const plasticNormal = new THREE.CanvasTexture(normalCanvas);
-    for (const texture of [roughness, plasticNormal]) {
-      texture.colorSpace = THREE.NoColorSpace;
-      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.anisotropy = 4;
-      this.finishTextures.push(texture);
-    }
-
-    for (const node of this.albums) {
-      node.material.uniforms.uRoughnessMap.value = roughness;
-      node.material.uniforms.uPlasticNormalMap.value = plasticNormal;
-      node.material.uniforms.uPlasticWrapIntensity.value = 0.16;
-      node.backMaterial.uniforms.uRoughnessMap.value = roughness;
-      node.backMaterial.uniforms.uPlasticNormalMap.value = plasticNormal;
-      node.backMaterial.uniforms.uPlasticWrapIntensity.value = 0.16;
+  private async loadCoverFinish(loader: THREE.TextureLoader) {
+    try {
+      const [roughness, plasticNormal] = await Promise.all([
+        loader.loadAsync(`${ASSET_ROOT}/textures/roughness.webp`),
+        loader.loadAsync(`${ASSET_ROOT}/textures/plastic-normal.webp`),
+      ]);
+      if (this.disposed) {
+        roughness.dispose();
+        plasticNormal.dispose();
+        return;
+      }
+      roughness.colorSpace = THREE.NoColorSpace;
+      plasticNormal.colorSpace = THREE.NoColorSpace;
+      roughness.wrapS = roughness.wrapT = THREE.ClampToEdgeWrapping;
+      plasticNormal.wrapS = plasticNormal.wrapT = THREE.ClampToEdgeWrapping;
+      roughness.anisotropy = 4;
+      plasticNormal.anisotropy = 4;
+      this.finishTextures.push(roughness, plasticNormal);
+      for (const node of this.albums) {
+        node.material.uniforms.uRoughnessMap.value = roughness;
+        node.material.uniforms.uPlasticNormalMap.value = plasticNormal;
+        node.material.uniforms.uPlasticWrapIntensity.value = 0.16;
+        node.backMaterial.uniforms.uRoughnessMap.value = roughness;
+        node.backMaterial.uniforms.uPlasticNormalMap.value = plasticNormal;
+        node.backMaterial.uniforms.uPlasticWrapIntensity.value = 0.16;
+      }
+    } catch (error) {
+      console.warn("Album finish textures could not be loaded", error);
     }
   }
 

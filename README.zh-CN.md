@@ -133,14 +133,14 @@ public/demo/                     # 生成的虚构封面
 scripts/generate-demo-art.mjs    # 封面/封底生成脚本
 ```
 
-3D 书架、墙面、层板和塑封反光全部由 Three.js 基础几何体和 Canvas 纹理在浏览器里生成。仓库不包含第三方模型、字体或图片包。
+演示封面由 SVG 生成。房间书架使用了 `public/demo/` 里的烘焙模型和塑封贴图，以便让光照和材质与原版书架一致；来源与再分发说明见 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
 
 ## 素材与商标
 
 演示中的游戏名、工作室、简介和封面均为本项目虚构。用户在使用本项目时提到的真实产品名、Logo 或商标仍归各自权利人所有。本仓库不包含商业游戏封面。
 
-界面设计参考了网页上编辑风格的 3D 书架交互，但实现和演示素材均为独立创作。
+3D 书架模型和塑封贴图属于第三方视觉参考素材，是为了和原版设计保持一致而保留的。再分发或商业使用前请先阅读 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
 
 ## 许可证
 
-[MIT](LICENSE)。代码和生成的演示封面都可以自由使用、修改和再分发。
+应用代码和生成的虚构封面使用 [MIT](LICENSE) 许可。第三方书架模型、PBR 贴图和 Inter 字体遵循各自的许可条款，详见 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
