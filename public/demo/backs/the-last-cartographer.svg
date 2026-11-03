@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-label="The Last Cartographer back cover">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a1618"/>
+      <stop offset="1" stop-color="#050b0c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".7" cy=".2" r=".7">
+      <stop offset="0" stop-color="rgba(123, 223, 242, 0.24)"/>
+      <stop offset="1" stop-color="rgba(123, 223, 242, 0)"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".045"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <rect width="1000" height="1000" fill="url(#glow)"/>
+  <g opacity=".24" filter="url(#soft)" transform="translate(0 40)">
+        <g>
+          <circle cx="500" cy="300" r="128" fill="rgba(123, 223, 242, 0.12)" stroke="rgba(123, 223, 242, 0.55)" stroke-width="2"/>
+          <circle cx="500" cy="300" r="70" fill="rgba(247, 243, 232, 0.18)"/>
+          <line x1="60" y1="380" x2="940" y2="380" stroke="rgba(123, 223, 242, 0.16)" stroke-width="1.5"/><line x1="60" y1="388.525905686621" x2="940" y2="388.525905686621" stroke="rgba(123, 223, 242, 0.19)" stroke-width="1.5"/><line x1="60" y1="409.6889279923901" x2="940" y2="409.6889279923901" stroke="rgba(123, 223, 242, 0.22)" stroke-width="1.5"/><line x1="60" y1="441.59688961668706" x2="940" y2="441.59688961668706" stroke="rgba(123, 223, 242, 0.25)" stroke-width="1.5"/><line x1="60" y1="483.38285194973315" x2="940" y2="483.38285194973315" stroke="rgba(123, 223, 242, 0.28)" stroke-width="1.5"/><line x1="60" y1="534.4850764024228" x2="940" y2="534.4850764024228" stroke="rgba(123, 223, 242, 0.31)" stroke-width="1.5"/><line x1="60" y1="594.4928278123845" x2="940" y2="594.4928278123845" stroke="rgba(123, 223, 242, 0.33999999999999997)" stroke-width="1.5"/><line x1="60" y1="663.0850902540026" x2="940" y2="663.0850902540026" stroke="rgba(123, 223, 242, 0.37)" stroke-width="1.5"/><line x1="60" y1="740" x2="940" y2="740" stroke="rgba(123, 223, 242, 0.4)" stroke-width="1.5"/><line x1="60" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="133.32999999999998" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="206.66" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="279.99" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="353.32" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="426.65" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="499.98" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="573.31" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="646.64" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="719.97" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="793.3" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="866.63" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="939.96" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/>
+        </g></g>
+  <g fill="#f7f5ef" font-family="Helvetica Neue, Inter, Arial, sans-serif">
+    <text x="86" y="92" font-size="18" letter-spacing="5" opacity=".6">GAME SHELF</text>
+    <text x="86" y="188" font-size="52" font-weight="700" letter-spacing="-1">The Last Cartographer</text>
+    <text x="86" y="234" font-size="20" letter-spacing="1" opacity=".62">Long Way Home · 2025</text>
+    <line x1="86" y1="272" x2="914" y2="272" stroke="rgba(255,255,255,.22)"/>
+    <text x="86" y="330" font-size="15" letter-spacing="4" fill="#7bdff2">ABOUT THIS EDITION</text>
+    <text x="86" y="384" font-size="22" fill="rgba(247,245,239,.82)" font-family="Helvetica Neue, Inter, Arial, sans-serif">A fictional exploration game about mapping a</text><text x="86" y="422" font-size="22" fill="rgba(247,245,239,.82)" font-family="Helvetica Neue, Inter, Arial, sans-serif">coastline that changes every tide. There is no</text><text x="86" y="460" font-size="22" fill="rgba(247,245,239,.82)" font-family="Helvetica Neue, Inter, Arial, sans-serif">combat, only weather, strangers, and a notebook that</text><text x="86" y="498" font-size="22" fill="rgba(247,245,239,.82)" font-family="Helvetica Neue, Inter, Arial, sans-serif">slowly becomes the world.</text>
+    <text x="86" y="676" font-size="15" letter-spacing="4" fill="#f7f3e8">IN THE BOX</text>
+    <text x="86" y="718" font-size="21" opacity=".8">One disc · one fictional world · zero downloads</text>
+    <text x="86" y="756" font-size="21" opacity=".8">A demo entry for the open-source shelf</text>
+    <text x="86" y="840" font-size="14" letter-spacing="3" opacity=".45">CATALOGUE THE-LAST-CARTOGRAPHER</text>
+    <text x="86" y="920" font-size="14" opacity=".45">Demo artwork generated by scripts/generate-demo-art.mjs</text>
+  </g>
+  <g fill="rgba(247,245,239,.86)">
+    <rect x="772" y="806" width="2" height="62"/><rect x="776" y="806" width="1" height="48"/><rect x="780" y="806" width="1" height="48"/><rect x="784" y="806" width="1" height="48"/><rect x="788" y="806" width="2" height="48"/><rect x="792" y="806" width="1" height="62"/><rect x="796" y="806" width="1" height="48"/><rect x="800" y="806" width="1" height="48"/><rect x="804" y="806" width="2" height="48"/><rect x="808" y="806" width="1" height="48"/><rect x="812" y="806" width="1" height="62"/><rect x="816" y="806" width="1" height="48"/><rect x="820" y="806" width="2" height="48"/><rect x="824" y="806" width="1" height="48"/><rect x="828" y="806" width="1" height="48"/><rect x="832" y="806" width="1" height="62"/><rect x="836" y="806" width="2" height="48"/><rect x="840" y="806" width="1" height="48"/><rect x="844" y="806" width="1" height="48"/><rect x="848" y="806" width="1" height="48"/><rect x="852" y="806" width="2" height="62"/><rect x="856" y="806" width="1" height="48"/><rect x="860" y="806" width="1" height="48"/><rect x="864" y="806" width="1" height="48"/><rect x="868" y="806" width="2" height="48"/><rect x="872" y="806" width="1" height="62"/><rect x="876" y="806" width="1" height="48"/><rect x="880" y="806" width="1" height="48"/><rect x="884" y="806" width="2" height="48"/><rect x="888" y="806" width="1" height="48"/><rect x="892" y="806" width="1" height="62"/><rect x="896" y="806" width="1" height="48"/><rect x="900" y="806" width="2" height="48"/><rect x="904" y="806" width="1" height="48"/><rect x="908" y="806" width="1" height="48"/><rect x="912" y="806" width="1" height="62"/><rect x="916" y="806" width="2" height="48"/><rect x="920" y="806" width="1" height="48"/>
+  </g>
+  <rect width="1000" height="1000" filter="url(#grain)" opacity=".8"/>
+</svg>

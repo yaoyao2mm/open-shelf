@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-label="The Last Cartographer cover">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1b1e"/>
+      <stop offset="1" stop-color="#091214"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".52" cy=".38" r=".55">
+      <stop offset="0" stop-color="rgba(123, 223, 242, 0.28)"/>
+      <stop offset="1" stop-color="rgba(123, 223, 242, 0)"/>
+    </radialGradient>
+    <radialGradient id="planetShade" cx=".32" cy=".24" r=".9">
+      <stop offset="0" stop-color="rgba(255,255,255,.38)"/>
+      <stop offset=".55" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="1" stop-color="rgba(0,0,0,.45)"/>
+    </radialGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset=".52" stop-color="rgba(13, 27, 30, 0)"/>
+      <stop offset="1" stop-color="rgba(13, 27, 30, 0.96)"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".05"/></feComponentTransfer>
+    </filter>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <rect width="1000" height="1000" fill="url(#glow)"/>
+  <g filter="url(#soft)" opacity=".65">
+        <g>
+          <circle cx="500" cy="300" r="128" fill="rgba(123, 223, 242, 0.12)" stroke="rgba(123, 223, 242, 0.55)" stroke-width="2"/>
+          <circle cx="500" cy="300" r="70" fill="rgba(247, 243, 232, 0.18)"/>
+          <line x1="60" y1="380" x2="940" y2="380" stroke="rgba(123, 223, 242, 0.16)" stroke-width="1.5"/><line x1="60" y1="388.525905686621" x2="940" y2="388.525905686621" stroke="rgba(123, 223, 242, 0.19)" stroke-width="1.5"/><line x1="60" y1="409.6889279923901" x2="940" y2="409.6889279923901" stroke="rgba(123, 223, 242, 0.22)" stroke-width="1.5"/><line x1="60" y1="441.59688961668706" x2="940" y2="441.59688961668706" stroke="rgba(123, 223, 242, 0.25)" stroke-width="1.5"/><line x1="60" y1="483.38285194973315" x2="940" y2="483.38285194973315" stroke="rgba(123, 223, 242, 0.28)" stroke-width="1.5"/><line x1="60" y1="534.4850764024228" x2="940" y2="534.4850764024228" stroke="rgba(123, 223, 242, 0.31)" stroke-width="1.5"/><line x1="60" y1="594.4928278123845" x2="940" y2="594.4928278123845" stroke="rgba(123, 223, 242, 0.33999999999999997)" stroke-width="1.5"/><line x1="60" y1="663.0850902540026" x2="940" y2="663.0850902540026" stroke="rgba(123, 223, 242, 0.37)" stroke-width="1.5"/><line x1="60" y1="740" x2="940" y2="740" stroke="rgba(123, 223, 242, 0.4)" stroke-width="1.5"/><line x1="60" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="133.32999999999998" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="206.66" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="279.99" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="353.32" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="426.65" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="499.98" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="573.31" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="646.64" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="719.97" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="793.3" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="866.63" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="939.96" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/>
+        </g></g>
+  <g opacity=".94">
+        <g>
+          <circle cx="500" cy="300" r="128" fill="rgba(123, 223, 242, 0.12)" stroke="rgba(123, 223, 242, 0.55)" stroke-width="2"/>
+          <circle cx="500" cy="300" r="70" fill="rgba(247, 243, 232, 0.18)"/>
+          <line x1="60" y1="380" x2="940" y2="380" stroke="rgba(123, 223, 242, 0.16)" stroke-width="1.5"/><line x1="60" y1="388.525905686621" x2="940" y2="388.525905686621" stroke="rgba(123, 223, 242, 0.19)" stroke-width="1.5"/><line x1="60" y1="409.6889279923901" x2="940" y2="409.6889279923901" stroke="rgba(123, 223, 242, 0.22)" stroke-width="1.5"/><line x1="60" y1="441.59688961668706" x2="940" y2="441.59688961668706" stroke="rgba(123, 223, 242, 0.25)" stroke-width="1.5"/><line x1="60" y1="483.38285194973315" x2="940" y2="483.38285194973315" stroke="rgba(123, 223, 242, 0.28)" stroke-width="1.5"/><line x1="60" y1="534.4850764024228" x2="940" y2="534.4850764024228" stroke="rgba(123, 223, 242, 0.31)" stroke-width="1.5"/><line x1="60" y1="594.4928278123845" x2="940" y2="594.4928278123845" stroke="rgba(123, 223, 242, 0.33999999999999997)" stroke-width="1.5"/><line x1="60" y1="663.0850902540026" x2="940" y2="663.0850902540026" stroke="rgba(123, 223, 242, 0.37)" stroke-width="1.5"/><line x1="60" y1="740" x2="940" y2="740" stroke="rgba(123, 223, 242, 0.4)" stroke-width="1.5"/><line x1="60" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="133.32999999999998" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="206.66" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="279.99" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="353.32" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="426.65" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="499.98" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="573.31" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="646.64" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="719.97" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="793.3" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="866.63" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/><line x1="939.96" y1="740" x2="500" y2="380" stroke="rgba(247, 243, 232, 0.24)" stroke-width="1.5"/>
+        </g></g>
+  <rect width="1000" height="1000" fill="url(#fade)"/>
+  <rect width="1000" height="1000" filter="url(#grain)" opacity=".8"/>
+  <g fill="#f7f5ef" font-family="Helvetica Neue, Inter, Arial, sans-serif">
+    <text x="86" y="74" font-size="18" letter-spacing="5" opacity=".68">GAME SHELF</text>
+    <text x="914" y="74" font-size="16" letter-spacing="3" text-anchor="end" opacity=".55">DEMO EDITION</text>
+    <text x="86" y="650.64" font-size="68" font-weight="700" letter-spacing="-1"><tspan x="86" dy="0">The Last</tspan><tspan x="86" dy="69.36">Cartographer</tspan></text>
+    <text x="86" y="902" font-size="22" letter-spacing="1" opacity=".68">Long Way Home</text>
+    <text x="914" y="902" font-size="18" letter-spacing="2" text-anchor="end" opacity=".55">2025</text>
+  </g>
+  <rect x="86" y="936" width="828" height="1" fill="rgba(255,255,255,.22)"/>
+  <text x="86" y="972" font-family="Helvetica Neue, Inter, Arial, sans-serif" font-size="15" letter-spacing="3" fill="rgba(255,255,255,.5)">FICTIONAL COLLECTION · OPEN SOURCE DEMO</text>
+</svg>
