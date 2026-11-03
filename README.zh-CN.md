@@ -1,39 +1,25 @@
-# Game Shelf UI
+# Game Shelf
 
-一个用于浏览游戏收藏的开源 3D 书架界面，基于 Next.js、React 和 Three.js。
+**把你真正拥有的游戏，放回一排书架上。**
 
-![Game Shelf 演示](docs/screenshot.jpg)
+![Game Shelf —— 从书架拉远到整面收藏墙](docs/demo.gif)
 
-![分类墙](docs/wall.jpg)
+大多数收藏最后都会变成一张表格：游戏名、存储大小、备份日期。它很有用，但不像房间里的那排书架。
 
-## 在线预览
+Game Shelf 想把那种感觉放回屏幕上。第一眼看到的是你每天会看到的那层书架：几张自己挑出来的封面，站在一束温和的房间光里。鼠标移上去，盒子会轻轻抬起；打开它，能看到封底、工作室和年份。继续往外滚，书架会向后退，变成一整面更高的收藏墙，并按你熟悉的类型分开。
 
-[**打开在线演示 →**](https://yaoyao2mm.github.io/open-shelf/)
+上面的动图录制自一个私人收藏版本。这个仓库里的公开演示数据是虚构的，所以可以直接分享，不用带上任何人的真实收藏。
 
-在线版由 GitHub Pages 托管，不依赖任何私人服务器或自定义域名。推送到 `main` 会自动运行 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)。上面的图片是静态截图，点链接可以打开可交互的 3D 书架。
+## 它是什么感觉
 
-这是一个独立的前端演示工程：没有账号、没有数据库、没有私人路径、没有部署脚本。演示里的游戏、工作室和封面全部是虚构的，可以直接公开或分享。
+- **先是一层书架，不是一张网格。** 九张精选游戏放在两块层板上，有房间光、塑封反光和带一点重量的翻面动画。
+- **拉远，看见整个收藏。** 滚轮向后，精选书架变成整面收藏墙的底部，其余游戏填满上方的层板。
+- **按类型逛。** 动作、冒险、角色扮演、生存恐怖、竞速，各有自己的墙面。
+- **搜索整个收藏。** 按游戏名、工作室、年份或简介查找。
+- **打开一款游戏。** 每个条目都有独立详情页，放着封面、开发商、发行年份和说明。
+- **手机也能用。** 手机端变成一叠可以滑动切换的卡片，并保留独立的详情视图。
 
-## 功能
-
-- 3D 书架：9 张精选封面、悬停抬升、弹簧翻转、详情展示。
-- 滚轮拉远或点击分类，展开整个收藏墙和层架。
-- 动作、冒险、角色扮演、生存恐怖、竞速五个分类墙。
-- 全收藏搜索。
-- 每个条目都有独立详情页。
-- 桌面和手机响应式布局。
-- 支持静态导出，可部署到 GitHub Pages、Netlify、Vercel 或任意静态托管。
-- 演示封面由脚本生成为 SVG，仓库里没有二进制图片素材。
-
-## 技术栈
-
-- Next.js 16（App Router）
-- React 19
-- Three.js
-- TypeScript
-- 没有 UI 框架、CSS-in-JS 或后端
-
-## 快速开始
+## 跑起来
 
 需要 Node.js 20 或更高版本。
 
@@ -44,17 +30,17 @@ npm run dev
 
 打开 <http://localhost:3000>。
 
-其他命令：
-
 ```bash
 npm run typecheck   # TypeScript 检查
 npm run build       # 生产构建
 npm run art         # 重新生成演示封面
 ```
 
+没有账号、没有数据库、没有后端。整个收藏就是一份 JSON。
+
 ## 换成你自己的收藏
 
-收藏数据只有一份文件：[`src/data/games.json`](src/data/games.json)。每个条目长这样：
+编辑 [`src/data/games.json`](src/data/games.json)。一个条目长这样：
 
 ```json
 {
@@ -73,10 +59,10 @@ npm run art         # 重新生成演示封面
 }
 ```
 
-- `featured: true` 会把游戏放上首页书架。前 9 个条目排成两排，其余条目放在拉远后的收藏墙上。
+- `featured: true` 会把游戏放上首页书架。前九个精选条目填满两块层板，其余条目放在拉远后的收藏墙上。
 - `categories` 可选 `action`、`adventure`、`rpg`、`horror`、`racing`。
 - `palette` 是生成封面时使用的三色配色。
-- `motif` 是封面图案。可选：`orbit`、`bloom`、`wave`、`prism`、`arc`、`grid`、`eclipse`、`monolith`、`stripes`、`spiral`、`constellation`、`rings`。
+- `motif` 是封面图案，可选 `orbit`、`bloom`、`wave`、`prism`、`arc`、`grid`、`eclipse`、`monolith`、`stripes`、`spiral`、`constellation`、`rings`。
 
 改完数据后运行：
 
@@ -84,34 +70,20 @@ npm run art         # 重新生成演示封面
 npm run art
 ```
 
-脚本会把方形封面写到 `public/demo/covers/`，把封底写到 `public/demo/backs/`。
+封面会写到 `public/demo/covers/`，封底写到 `public/demo/backs/`。
 
 ### 使用自己的封面
 
-用自己的图片替换生成的 SVG 即可。保持文件 id 不变，必要时修改 `games.ts` 里的扩展名：
+用自己的方形图片替换生成的 SVG，必要时修改 `games.ts` 里的扩展名：
 
 ```ts
 cover: asset(`/covers/${game.id}.webp`),
 back: asset(`/backs/${game.id}.webp`),
 ```
 
-3D 场景和 `next/image` 共用同一对文件，所以每个游戏只需要一张约 1024×1024 的方形封面和一张封底。请不要把没有 redistribution 授权的商业游戏封面提交到公开仓库。
+3D 场景和页面视图共用同一对文件，所以每款游戏只需要一张约 1024×1024 的方形封面和一张封底。请不要公开你没有 redistribution 授权的商业游戏封面。
 
-## 静态导出
-
-```bash
-NEXT_STATIC_EXPORT=1 npm run build
-```
-
-产物在 `out/`。如果要部署到子路径：
-
-```bash
-NEXT_STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH=/game-shelf npm run build
-```
-
-`basePath` 和 `assetPrefix` 已经接在 `next.config.ts` 里，所有素材地址都会跟随 `NEXT_PUBLIC_BASE_PATH`。
-
-## 目录结构
+## 它是怎么做的
 
 ```text
 src/
@@ -120,8 +92,8 @@ src/
     games/[id]/page.tsx          # 详情页
     library.css                  # 书架界面样式
   components/library/
-    GameShelf.tsx                # DOM 外壳、搜索、手机端、分类索引
-    ShelfScene.ts                # Three.js 场景
+    GameShelf.tsx                # DOM 外壳、搜索、手机布局、分类索引
+    ShelfScene.ts                # Three.js 场景、相机、光照、收藏墙
     games.ts                     # 数据加载和辅助函数
     walls.ts                     # 分类墙条目
     layoutWall.ts                # 两排墙面布局
@@ -129,17 +101,33 @@ src/
     icons.tsx
   data/games.json                # 收藏数据
   types/library.ts
-public/demo/                     # 生成的虚构封面
+public/demo/                     # 演示封面、书架模型和贴图
 scripts/generate-demo-art.mjs    # 封面/封底生成脚本
 ```
 
-演示封面由 SVG 生成。房间书架使用了 `public/demo/` 里的烘焙模型和塑封贴图，以便让光照和材质与原版书架一致；来源与再分发说明见 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
+书架是一个 Three.js 场景：烘焙好的房间模型、在书架和收藏墙之间缓动的相机、用 DOM 叠在场景上的封面和按钮，以及负责编辑风格排版的 CSS。数据层刻意做得很小，没有需要接的 API。
 
-## 素材与商标
+## 部署
 
-演示中的游戏名、工作室、简介和封面均为本项目虚构。用户在使用本项目时提到的真实产品名、Logo 或商标仍归各自权利人所有。本仓库不包含商业游戏封面。
+可以导出成纯静态文件：
 
-3D 书架模型和塑封贴图属于第三方视觉参考素材，是为了和原版设计保持一致而保留的。再分发或商业使用前请先阅读 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
+```bash
+NEXT_STATIC_EXPORT=1 npm run build
+```
+
+产物在 `out/`。如果要部署在子路径下：
+
+```bash
+NEXT_STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH=/game-shelf npm run build
+```
+
+仓库里还带了 GitHub Pages 工作流 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)。推送到 `main` 就会自动构建并发布，不需要私人服务器或自定义域名。
+
+## 素材与第三方资源
+
+演示中的游戏名、工作室、简介和封面均为本项目虚构。真实产品名、Logo 或商标仍归各自权利人所有。本仓库不包含商业游戏封面。
+
+书架模型、塑封贴图和 Inter 字体属于第三方视觉参考素材，是为了和原版设计保持一致而保留的。再分发或商业使用前请先阅读 [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md)。
 
 ## 许可证
 

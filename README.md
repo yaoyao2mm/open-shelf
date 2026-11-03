@@ -1,39 +1,25 @@
-# Game Shelf UI
+# Game Shelf
 
-An open-source 3D game shelf for browsing a collection. Built with Next.js, React and Three.js.
+**A 3D shelf for the games you actually own.**
 
-![Game Shelf demo](docs/screenshot.jpg)
+![Game Shelf — the shelf, then the whole collection](docs/demo.gif)
 
-![Category wall](docs/wall.jpg)
+Most collections end up in a spreadsheet: a list of titles, storage sizes and backup dates. Useful, but it never feels like the shelf in the room.
 
-## Live demo
+Game Shelf puts that feeling back on screen. The first view is the shelf you see every day: a handful of covers you chose, standing in a warm pool of light. Hover a case and it lifts. Open it and you get the back cover, the studio and the year. Pull back and the shelf opens into the whole collection, laid out on a taller rack and split into the genres you actually think in.
 
-[**Open the live demo →**](https://yaoyao2mm.github.io/open-shelf/)
+The GIF above was recorded from a private collection build. The public demo data in this repository is fictional, so the project can be shared without shipping anyone's library.
 
-The live version is deployed with GitHub Pages, so it does not depend on any private server or custom domain. Pushing to `main` runs [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). The screenshots above are static; the link opens the interactive 3D shelf.
+## What it feels like
 
-This is a standalone front-end demo: no accounts, no database, no private paths, no deployment scripts. The collection, studios and cover art in the demo are fictional, so the project can be published and shared as-is.
+- **A front shelf, not a grid.** Nine featured games sit on two boards with a soft room light, cover sheen and a spring-loaded flip.
+- **Pull back to the whole collection.** Scroll out and the featured shelf becomes the bottom of a full rack; the rest of the games fill the shelves above it.
+- **Browse by mood.** Action, Adventure, RPG, Survival Horror and Racing each get their own wall.
+- **Search across everything.** Find a game by title, studio, year or description.
+- **Open a game.** Every entry has a detail page with its cover, developer, release year and notes.
+- **Works on a phone.** The shelf becomes a stacked deck with swipe/wheel navigation and a dedicated detail view.
 
-## What it does
-
-- A 3D shelf with nine featured covers, hover lift, a spring-driven cover flip and a detail view.
-- Scroll out (or pick a category) to open the collection wall, laid out as a shelf rack.
-- Category walls for Action, Adventure, RPG, Survival Horror and Racing.
-- Search across the whole collection.
-- A detail page for every entry.
-- Responsive desktop and mobile layouts.
-- Static export support for GitHub Pages, Netlify, Vercel or any static host.
-- Demo artwork generated as SVG by a small script, so there are no binary image assets.
-
-## Stack
-
-- Next.js 16 (App Router)
-- React 19
-- Three.js
-- TypeScript
-- No UI framework, no CSS-in-JS, no backend
-
-## Getting started
+## Run it
 
 Requires Node.js 20 or newer.
 
@@ -44,17 +30,17 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-Other scripts:
-
 ```bash
-npm run typecheck   # TypeScript
+npm run typecheck   # TypeScript check
 npm run build       # production build
 npm run art         # regenerate the demo cover art
 ```
 
-## Make it yours
+No accounts, no database, no backend. The whole collection is one JSON file.
 
-The collection lives in one file: [`src/data/games.json`](src/data/games.json). Each entry looks like this:
+## Make it your shelf
+
+Edit [`src/data/games.json`](src/data/games.json). A game looks like this:
 
 ```json
 {
@@ -73,57 +59,41 @@ The collection lives in one file: [`src/data/games.json`](src/data/games.json). 
 }
 ```
 
-- `featured: true` puts a game on the front shelf. Nine entries are laid out on the two shelf rows; extra entries live on the collection wall.
+- `featured: true` puts a game on the front shelf. The first nine featured entries fill the two boards; the rest live on the collection wall.
 - `categories` accepts `action`, `adventure`, `rpg`, `horror` and `racing`.
 - `palette` is the three-colour palette used by the generated artwork.
-- `motif` selects the artwork pattern. Available motifs: `orbit`, `bloom`, `wave`, `prism`, `arc`, `grid`, `eclipse`, `monolith`, `stripes`, `spiral`, `constellation`, `rings`.
+- `motif` chooses a pattern: `orbit`, `bloom`, `wave`, `prism`, `arc`, `grid`, `eclipse`, `monolith`, `stripes`, `spiral`, `constellation` or `rings`.
 
-After editing the data, run:
+Then regenerate the demo artwork:
 
 ```bash
 npm run art
 ```
 
-The script writes square covers to `public/demo/covers/` and back covers to `public/demo/backs/`.
+Covers go to `public/demo/covers/`, back covers to `public/demo/backs/`.
 
-### Use your own artwork
+### Use your own covers
 
-Replace the generated SVGs with your own files. Keep the same ids and update the paths if you change the extension:
+Replace the generated SVGs with your own square images and update the extensions in `games.ts` if needed:
 
 ```ts
 cover: asset(`/covers/${game.id}.webp`),
 back: asset(`/backs/${game.id}.webp`),
 ```
 
-The 3D scene and the `next/image` views use the same two files per game, so a square image around 1024×1024 is enough. Do not commit artwork you do not have the rights to redistribute.
+The 3D scene and the page views share the same two files per game, so a square image around 1024×1024 is enough. Do not publish artwork you do not have the rights to redistribute.
 
-## Static export
-
-The app can be built as static files:
-
-```bash
-NEXT_STATIC_EXPORT=1 npm run build
-```
-
-The output is written to `out/`. To host it under a sub-path:
-
-```bash
-NEXT_STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH=/game-shelf npm run build
-```
-
-`basePath` and `assetPrefix` are wired through `next.config.ts`, and every asset URL respects `NEXT_PUBLIC_BASE_PATH`.
-
-## Project layout
+## How it works
 
 ```text
 src/
   app/
     page.tsx                     # shelf page
     games/[id]/page.tsx          # detail page
-    library.css                  # shelf UI
+    library.css                  # shelf interface
   components/library/
-    GameShelf.tsx                # DOM shell, search, mobile, category index
-    ShelfScene.ts                # Three.js scene
+    GameShelf.tsx                # DOM shell, search, mobile layout, category index
+    ShelfScene.ts                # Three.js scene, camera, lighting, wall
     games.ts                     # data loader and helpers
     walls.ts                     # category wall entries
     layoutWall.ts                # two-row wall layout
@@ -131,17 +101,33 @@ src/
     icons.tsx
   data/games.json                # the collection
   types/library.ts
-public/demo/                     # generated fictional artwork
+public/demo/                     # demo covers, shelf model and textures
 scripts/generate-demo-art.mjs    # cover/back generator
 ```
 
-The demo cover art is generated in SVG. The room shelf uses the baked model and plastic-wrap textures in `public/demo/` so the lighting and material match the original shelf design; provenance and reuse notes are in [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md).
+The shelf is a Three.js scene: a baked room model, a camera that eases between the shelf and the wall, DOM overlays for covers and buttons, and CSS for the editorial typography. The data layer is intentionally small; there is no API to wire up.
 
-## Artwork and trademarks
+## Deploy
 
-All demo titles, studios, descriptions and cover art are fictional and were created for this project. Any real product names, logos or trademarks mentioned by users of this project remain the property of their respective owners. This repository does not include commercial game artwork.
+The app can be exported as static files:
 
-The 3D shelf model and plastic-wrap textures are third-party visual references included for parity with the original design. Read [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md) before redistributing or using the project commercially.
+```bash
+NEXT_STATIC_EXPORT=1 npm run build
+```
+
+The output is in `out/`. For a project hosted under a sub-path:
+
+```bash
+NEXT_STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH=/game-shelf npm run build
+```
+
+The repository also includes a GitHub Pages workflow at [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). Push to `main` and the site is built and published automatically, with no private server or custom domain.
+
+## Artwork and third-party assets
+
+All demo titles, studios, descriptions and cover art are fictional and were created for this project. Any real product names, logos or trademarks remain the property of their respective owners. The repository does not include commercial game artwork.
+
+The shelf model, plastic-wrap textures and Inter font are third-party visual references included for parity with the original design. Read [`LICENSES/THIRD-PARTY.md`](LICENSES/THIRD-PARTY.md) before redistributing or using the project commercially.
 
 ## License
 
