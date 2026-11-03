@@ -6,6 +6,12 @@ An open-source 3D game shelf for browsing a collection. Built with Next.js, Reac
 
 ![Category wall](docs/wall.jpg)
 
+## Live demo
+
+[**Open the live demo →**](https://yaoyao2mm.github.io/open-shelf/)
+
+The live version is deployed with GitHub Pages, so it does not depend on any private server or custom domain. Pushing to `main` runs [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). The screenshots above are static; the link opens the interactive 3D shelf.
+
 This is a standalone front-end demo: no accounts, no database, no private paths, no deployment scripts. The collection, studios and cover art in the demo are fictional, so the project can be published and shared as-is.
 
 ## What it does

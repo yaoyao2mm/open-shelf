@@ -6,6 +6,12 @@
 
 ![分类墙](docs/wall.jpg)
 
+## 在线预览
+
+[**打开在线演示 →**](https://yaoyao2mm.github.io/open-shelf/)
+
+在线版由 GitHub Pages 托管，不依赖任何私人服务器或自定义域名。推送到 `main` 会自动运行 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)。上面的图片是静态截图，点链接可以打开可交互的 3D 书架。
+
 这是一个独立的前端演示工程：没有账号、没有数据库、没有私人路径、没有部署脚本。演示里的游戏、工作室和封面全部是虚构的，可以直接公开或分享。
 
 ## 功能
